@@ -1,7 +1,8 @@
 variable "accounts" {
   description = "List of accounts to be created"
   type = map(object({
-    email = string
+    email           = string
+    tf_admin_groups = list(string)
   }))
 }
 

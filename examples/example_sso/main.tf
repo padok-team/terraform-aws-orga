@@ -1,3 +1,5 @@
+# Configure SSO for the organization account
+# ---
 # Accounts:
 #  - Organization account
 #
@@ -23,13 +25,13 @@ provider "aws" {
   region = "eu-west-3"
 }
 
-module "sso" {
+module "orga" {
   source = "../.."
 
   accounts = {}
 
   accounts_assignements = {
-    "padok-cloud-factory" = {
+    "orga_account" = {
       settlers = [
         "padok"
       ],
