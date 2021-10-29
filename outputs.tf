@@ -1,4 +1,4 @@
-output "example" {
-  value       = "ressource_type.name.atttibute"
-  description = "A meaningful description"
+output "accounts_created" {
+  value       = local.accounts_created
+  description = "List of accounts created"
 }

@@ -9,23 +9,58 @@ data "aws_organizations_organization" "this" {}
 
 locals {
   accounts_datasource = { for account in data.aws_organizations_organization.this.accounts :
-    account.name => account
+    account.name => {
+      id = account.id
+    }
   }
 
-  accounts_available = merge(local.accounts_datasource, aws_organizations_account.this)
+  accounts_created = { for account, value in aws_organizations_account.this :
+    account => {
+      id = value.id
+    }
+  }
 
-  accounts_assignements_flatten = flatten([for account, value in var.accounts_assignements :
-    flatten([for permission_set_name, groups in value :
-      [for group in groups :
-        {
-          account             = local.accounts_available[account].id
-          permission_set_name = permission_set_name
-          permission_set_arn  = module.permission_sets.permission_sets[permission_set_name].arn
-          principal_type      = "GROUP"
-          principal_name      = group
-        }
-    ]])
-  ])
+  accounts_available = merge(local.accounts_datasource, local.accounts_created)
+
+  # Flatten the 'accounts_assignements' user-friendly input to be more module-friendly.
+  # transform
+  #   accounts_assignements = {
+  #     <account_name> = {
+  #       <permission_set_name> = ["<group_name1>", "<group_name2>"]
+  #   }
+  #
+  # into
+  #   [
+  #     {
+  #      account = <account_id>
+  #      permission_set_name = <permission_set_name>
+  #      permission_set_arn  = <permission_set_arn>
+  #      principal_type      = "GROUP"
+  #      principal_name      = <group_name1>
+  #     },
+  #     {
+  #      account = <account_id>
+  #      permission_set_name = <permission_set_name>
+  #      permission_set_arn  = <permission_set_arn>
+  #      principal_type      = "GROUP"
+  #      principal_name      = <group_name2>
+  #     }
+  #   ]
+  accounts_assignements_flatten = (
+    flatten([for account_name, value in var.accounts_assignements :
+      flatten([for permission_set_name, groups in value :
+        [for group_name in groups :
+          {
+            account             = local.accounts_available[account_name].id
+            permission_set_name = permission_set_name
+            permission_set_arn  = module.permission_sets.permission_sets[permission_set_name].arn
+            principal_type      = "GROUP"
+            principal_name      = group_name
+          }
+        ]
+      ])
+    ])
+  )
 }
 
 resource "aws_organizations_account" "this" {
