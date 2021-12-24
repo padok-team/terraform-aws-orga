@@ -30,7 +30,7 @@ module "sso" {
   accounts = {}
 
   # Here, for exemple:
-  #  - padok-cloud-factory is the name of the target accounr
+  #  - padok-cloud-factory is the name of the target account
   #  - settlers is the name of a permission set
   #  - dev and padok are groups that exist in SSO identity store (c.f. AWS SSO admin console)
   #
