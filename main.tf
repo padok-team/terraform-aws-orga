@@ -5,6 +5,8 @@
 
 data "aws_organizations_organization" "this" {}
 
+# ========== LOCAL VARIABLES ========== #
+
 locals {
   accounts_datasource = { for account in data.aws_organizations_organization.this.accounts :
     account.name => {
@@ -59,7 +61,36 @@ locals {
       ])
     ])
   )
+
+  # Terraform backend
+  tf_admin_permission_sets = [for account, value in var.accounts :
+    {
+      name               = "tf_admin_${account}",
+      description        = "Allow Access to the terraform backend for ${account}",
+      relay_state        = "",
+      session_duration   = "",
+      tags               = {},
+      inline_policy      = data.aws_iam_policy_document.tf_admin_policies[account].json
+      policy_attachments = []
+    }
+  ]
+
+  tf_admin_accounts_assignements_flatten = (
+    flatten([for account, value in var.accounts :
+      flatten([for group_name in value.tf_admin_groups :
+        {
+          account             = local.accounts_available[account].id
+          permission_set_name = "tf_admin_${account}"
+          permission_set_arn  = module.permission_sets.permission_sets["tf_admin_${account}"].arn
+          principal_type      = "GROUP"
+          principal_name      = group_name
+        }
+      ])
+    ])
+  )
 }
+
+# ========== RESOURCES ========== #
 
 resource "aws_organizations_account" "this" {
   for_each = var.accounts
@@ -71,11 +102,45 @@ resource "aws_organizations_account" "this" {
 module "permission_sets" {
   source = "git::https://github.com/cloudposse/terraform-aws-sso.git//modules/permission-sets?ref=0.6.1"
 
-  permission_sets = var.permissions_sets
+  permission_sets = concat(var.permissions_sets, local.tf_admin_permission_sets)
 }
 
 module "sso_account_assignments" {
   source = "git::https://github.com/cloudposse/terraform-aws-sso.git//modules/account-assignments?ref=0.6.1"
 
-  account_assignments = local.accounts_assignements_flatten
+  account_assignments = concat(local.accounts_assignements_flatten, local.tf_admin_accounts_assignements_flatten)
+}
+
+
+# Terraform backend
+module "tf_backends" {
+  for_each = var.accounts
+  source   = "git::https://github.com/padok-team/terraform-aws-terraformbackend?ref=v1.0.0"
+
+  bucket_name         = "${each.key}-backend-terraform-state"
+  dynamodb_table_name = "${each.key}-backend-terraform-lock"
+}
+
+data "aws_iam_policy_document" "tf_admin_policies" {
+  for_each = var.accounts
+
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:ListBucket"]
+    resources = ["arn:aws:s3:::${each.key}-backend-terraform-state"]
+  }
+  statement {
+    effect    = "Allow"
+    actions   = ["s3:GetObject", "s3:PutObject"]
+    resources = ["arn:aws:s3:::${each.key}-backend-terraform-state/*"]
+  }
+  statement {
+    effect = "Allow"
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem"
+    ]
+    resources = ["arn:aws:dynamodb:*:*:table/${each.key}-backend-terraform-lock}"]
+  }
 }

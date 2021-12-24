@@ -1,3 +1,5 @@
+# Configure SSO for the organization account
+# ---
 # Accounts:
 #  - Organization account
 #
@@ -24,7 +26,7 @@ provider "aws" {
   region = "eu-west-3"
 }
 
-module "sso" {
+module "orga" {
   source = "../.."
 
   accounts = {}
@@ -37,7 +39,7 @@ module "sso" {
   # Note that here, since we do not create the account padok-cloud-factory (the accounts list above is empty)
   # The account therefore need to have already been created outside of Terraform
   accounts_assignements = {
-    "padok-cloud-factory" = {
+    "orga_account" = {
       settlers = [
         "padok"
       ],
