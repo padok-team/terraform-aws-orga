@@ -22,9 +22,9 @@ locals {
 
   accounts_available = merge(local.accounts_datasource, local.accounts_created)
 
-  # Flatten the 'accounts_assignements' user-friendly input to be more module-friendly.
+  # Flatten the 'account_assignements' user-friendly input to be more module-friendly.
   # transform
-  #   accounts_assignements = {
+  #   account_assignements = {
   #     <account_name> = {
   #       <permission_set_name> = ["<group_name1>", "<group_name2>"]
   #   }
@@ -46,8 +46,8 @@ locals {
   #      principal_name      = <group_name2>
   #     }
   #   ]
-  accounts_assignements_flatten = (
-    flatten([for account_name, value in var.accounts_assignements :
+  account_assignements_flatten = (
+    flatten([for account_name, value in var.account_assignements :
       flatten([for permission_set_name, groups in value :
         [for group_name in groups :
           {
@@ -70,12 +70,12 @@ locals {
       relay_state        = "",
       session_duration   = "",
       tags               = {},
-      inline_policy      = data.aws_iam_policy_document.tf_admin_policies[account].json
+      inline_policy      = data.aws_iam_policy_document.tf_admin[account].json
       policy_attachments = []
     }
   ]
 
-  tf_admin_accounts_assignements_flatten = (
+  tf_admin_account_assignements_flatten = (
     flatten([for account, value in var.accounts :
       flatten([for group_name in value.tf_admin_groups :
         {
@@ -102,18 +102,18 @@ resource "aws_organizations_account" "this" {
 module "permission_sets" {
   source = "git::https://github.com/cloudposse/terraform-aws-sso.git//modules/permission-sets?ref=0.6.1"
 
-  permission_sets = concat(var.permissions_sets, local.tf_admin_permission_sets)
+  permission_sets = concat(var.permission_sets, local.tf_admin_permission_sets)
 }
 
-module "sso_account_assignments" {
+module "account_assignments" {
   source = "git::https://github.com/cloudposse/terraform-aws-sso.git//modules/account-assignments?ref=0.6.1"
 
-  account_assignments = concat(local.accounts_assignements_flatten, local.tf_admin_accounts_assignements_flatten)
+  account_assignments = concat(local.account_assignements_flatten, local.tf_admin_account_assignements_flatten)
 }
 
 
 # Terraform backend
-module "tf_backends" {
+module "tf_backend" {
   for_each = var.accounts
   source   = "git::https://github.com/padok-team/terraform-aws-terraformbackend?ref=v1.0.0"
 
@@ -121,7 +121,7 @@ module "tf_backends" {
   dynamodb_table_name = "${each.key}-backend-terraform-lock"
 }
 
-data "aws_iam_policy_document" "tf_admin_policies" {
+data "aws_iam_policy_document" "tf_admin" {
   for_each = var.accounts
 
   statement {

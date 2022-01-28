@@ -31,7 +31,7 @@ module "orga" {
     }
   }
 
-  accounts_assignements = {
+  account_assignements = {
     stagging = {
       settlers = ["padok", "dev"],
     },
@@ -41,7 +41,7 @@ module "orga" {
     }
   }
 
-  permissions_sets = [
+  permission_sets = [
     {
       name               = "settlers",
       description        = "Allow Full Access to the account",

@@ -6,12 +6,12 @@ variable "accounts" {
   }))
 }
 
-variable "accounts_assignements" {
+variable "account_assignements" {
   description = "List of assignement between an account within the organization, a permission set and a group."
   type        = map(map(list(string)))
 }
 
-variable "permissions_sets" {
+variable "permission_sets" {
   description = "List of available permission sets"
   type = list(object({
     name               = string

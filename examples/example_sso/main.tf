@@ -38,7 +38,7 @@ module "orga" {
   #
   # Note that here, since we do not create the account padok-cloud-factory (the accounts list above is empty)
   # The account therefore need to have already been created outside of Terraform
-  accounts_assignements = {
+  account_assignements = {
     "orga_account" = {
       settlers = [
         "padok"
@@ -49,7 +49,7 @@ module "orga" {
     },
   }
 
-  permissions_sets = [
+  permission_sets = [
     {
       name               = "settlers",
       description        = "Allow Full Access to the account",

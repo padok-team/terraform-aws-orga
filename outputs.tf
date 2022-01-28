@@ -1,4 +1,4 @@
-output "accounts_created" {
+output "accounts_information" {
   value = [for account_name, value in var.accounts :
     {
       id                  = local.accounts_available[account_name].id
