@@ -58,7 +58,7 @@ module "orga" {
   #  - staging is the name of the target account (as created above)
   #  - settlers is the name of a permission set. We are setting the permissions in permissions_set
   #  - dev and padok are groups that exist in SSO identity store (c.f. AWS SSO admin console)
-  accounts_assignements = {
+  account_assignements = {
     staging = {
       settlers = [
         "dev",
@@ -83,7 +83,7 @@ module "orga" {
     }
   }
 
-  permissions_sets = [
+  permission_sets = [
     {
       name               = "settlers",
       description        = "Allow Full Access to the account",
