@@ -83,23 +83,23 @@ terrform apply
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_account_assignments"></a> [account\_assignments](#module\_account\_assignments) | git::https://github.com/cloudposse/terraform-aws-sso.git//modules/account-assignments | 0.6.1 |
 | <a name="module_permission_sets"></a> [permission\_sets](#module\_permission\_sets) | git::https://github.com/cloudposse/terraform-aws-sso.git//modules/permission-sets | 0.6.1 |
-| <a name="module_sso_account_assignments"></a> [sso\_account\_assignments](#module\_sso\_account\_assignments) | git::https://github.com/cloudposse/terraform-aws-sso.git//modules/account-assignments | 0.6.1 |
-| <a name="module_tf_backends"></a> [tf\_backends](#module\_tf\_backends) | git::https://github.com/padok-team/terraform-aws-terraformbackend | feat/init_module |
+| <a name="module_tf_backend"></a> [tf\_backend](#module\_tf\_backend) | git::https://github.com/padok-team/terraform-aws-terraformbackend | v1.0.0 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_accounts"></a> [accounts](#input\_accounts) | List of accounts to be created | <pre>map(object({<br>    email = string<br>    tf_admin_groups = list(string)<br>  }))</pre> | n/a | yes |
-| <a name="input_accounts_assignements"></a> [accounts\_assignements](#input\_accounts\_assignements) | List of assignement between an account within the organization, a permission set and a group. | `map(map(list(string)))` | n/a | yes |
-| <a name="input_permissions_sets"></a> [permissions\_sets](#input\_permissions\_sets) | List of available permission sets | <pre>list(object({<br>    name               = string<br>    description        = string<br>    relay_state        = string<br>    session_duration   = string<br>    tags               = map(string)<br>    inline_policy      = string<br>    policy_attachments = list(string)<br>  }))</pre> | n/a | yes |
+| <a name="input_account_assignements"></a> [account\_assignements](#input\_account\_assignements) | List of assignement between an account within the organization, a permission set and a group. | `map(map(list(string)))` | n/a | yes |
+| <a name="input_accounts"></a> [accounts](#input\_accounts) | List of accounts to be created | <pre>map(object({<br>    email           = string<br>    tf_admin_groups = list(string)<br>  }))</pre> | n/a | yes |
+| <a name="input_permission_sets"></a> [permission\_sets](#input\_permission\_sets) | List of available permission sets | <pre>list(object({<br>    name               = string<br>    description        = string<br>    relay_state        = string<br>    session_duration   = string<br>    tags               = map(string)<br>    inline_policy      = string<br>    policy_attachments = list(string)<br>  }))</pre> | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_accounts_created"></a> [accounts\_created](#output\_accounts\_created) | List of accounts created with terraform backend information |
+| <a name="output_accounts_information"></a> [accounts\_information](#output\_accounts\_information) | List of accounts created with terraform backend information |
 <!-- END_TF_DOCS -->
 
 ## License
