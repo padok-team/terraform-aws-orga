@@ -1,6 +1,6 @@
 # AWS Organisation Terraform module
 
-Terraform module which creates **Child Accounts** and **SSO permissions assignements** resources on **AWS**. It will also create **Terraform Backend** for Child Accounts. This module is an abstraction of the [terraform-aws-sso](https://github.com/cloudposse/terraform-aws-sso) by [@cloudposse](https://github.com/cloudposse).
+Terraform module which creates **Child Accounts** and **SSO permissions assignements** resources on **AWS**. It will also create a **Terraform Backend** in Child Accounts. This module is an abstraction of the [terraform-aws-sso](https://github.com/cloudposse/terraform-aws-sso) by [@cloudposse](https://github.com/cloudposse).
 
 ## User Stories for this module
 
@@ -75,8 +75,8 @@ terrform apply
 
 ## Examples
 
-- [AAOps I give my users rights to AWS organization accounts with SSO](examples/example_sso/main.tf)
-- [AAOps I create 3 AWS account (staging, preprod, prod) and give my users rights to them with SSO](examples/example_basic/main.tf)
+- [Give users access to the AWS organization accounts with AWS SSO](examples/example_sso/main.tf)
+- [Create 3 AWS account (staging, preprod, prod) and give my users access with AWS SSO](examples/example_basic/main.tf)
 
 <!-- BEGIN_TF_DOCS -->
 ## Modules
@@ -91,7 +91,7 @@ terrform apply
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_account_assignements"></a> [account\_assignements](#input\_account\_assignements) | List of assignement between an account within the organization, a permission set and a group. | `map(map(list(string)))` | n/a | yes |
+| <a name="input_account_assignements"></a> [account\_assignements](#input\_account\_assignements) | List of assignements between an account within the organization, a permission set and a group. | `map(map(list(string)))` | n/a | yes |
 | <a name="input_accounts"></a> [accounts](#input\_accounts) | List of accounts to be created | <pre>map(object({<br>    email           = string<br>    tf_admin_groups = list(string)<br>  }))</pre> | n/a | yes |
 | <a name="input_permission_sets"></a> [permission\_sets](#input\_permission\_sets) | List of available permission sets | <pre>list(object({<br>    name               = string<br>    description        = string<br>    relay_state        = string<br>    session_duration   = string<br>    tags               = map(string)<br>    inline_policy      = string<br>    policy_attachments = list(string)<br>  }))</pre> | n/a | yes |
 
