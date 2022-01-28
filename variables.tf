@@ -7,7 +7,7 @@ variable "accounts" {
 }
 
 variable "account_assignements" {
-  description = "List of assignement between an account within the organization, a permission set and a group."
+  description = "List of assignements between an account within the organization, a permission set and a group."
   type        = map(map(list(string)))
 }
 
