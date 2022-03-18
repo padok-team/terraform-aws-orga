@@ -115,7 +115,7 @@ module "account_assignments" {
 # Terraform backend
 module "tf_backend" {
   for_each = var.accounts
-  source   = "git::https://github.com/padok-team/terraform-aws-terraformbackend?ref=v1.0.0"
+  source   = "git::https://github.com/padok-team/terraform-aws-terraformbackend?ref=v0.1.0"
 
   bucket_name         = "${each.key}-backend-terraform-state"
   dynamodb_table_name = "${each.key}-backend-terraform-lock"
