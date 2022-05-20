@@ -1,0 +1,8 @@
+---
+site_name: terraform-aws-orga
+
+repo_name: padok-team/terraform-aws-orga
+repo_url: https://github.com/padok-team/terraform-aws-orga
+
+plugins:
+  - techdocs-core

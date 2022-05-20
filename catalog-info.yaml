@@ -1,0 +1,21 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: terraform-aws-orga
+  description: >
+    Terraform module which creates Child Accounts and SSO permissions
+    assignements resources on AWS. It will also create a Terraform Backend in
+    Child Accounts. This module is an abstraction of the terraform-aws-sso
+    module by @cloudposse.
+  tags:
+    - "terraform"
+    - "aws"
+  annotations:
+    github.com/project-slug: padok-team/terraform-aws-orga
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: module
+  system: terraform
+  owner: library-aws
+  lifecycle: experimental
