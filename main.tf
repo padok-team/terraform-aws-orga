@@ -63,17 +63,17 @@ locals {
   )
 
   # Terraform backend
-  tf_admin_permission_sets = [for account, value in var.accounts :
-    {
-      name               = "tf_admin_${account}",
-      description        = "Allow Access to the terraform backend for ${account}",
-      relay_state        = "",
-      session_duration   = "",
-      tags               = {},
-      inline_policy      = data.aws_iam_policy_document.tf_admin[account].json
-      policy_attachments = []
-    }
-  ]
+  # tf_admin_permission_sets = [for account, value in var.accounts :
+  #   {
+  #     name               = "tf_admin_${account}",
+  #     description        = "Allow Access to the terraform backend for ${account}",
+  #     relay_state        = "",
+  #     session_duration   = "",
+  #     tags               = {},
+  #     inline_policy      = data.aws_iam_policy_document.tf_admin[account].json
+  #     policy_attachments = []
+  #   }
+  # ]
 
   tf_admin_account_assignements_flatten = (
     flatten([for account, value in var.accounts :
@@ -99,11 +99,11 @@ resource "aws_organizations_account" "this" {
   email = each.value.email
 }
 
-module "permission_sets" {
-  source = "git::https://github.com/cloudposse/terraform-aws-sso.git//modules/permission-sets?ref=0.6.1"
+# module "permission_sets" {
+#   source = "git::https://github.com/cloudposse/terraform-aws-sso.git//modules/permission-sets?ref=0.6.1"
 
-  permission_sets = concat(var.permission_sets, local.tf_admin_permission_sets)
-}
+#   permission_sets = concat(var.permission_sets, local.tf_admin_permission_sets)
+# }
 
 module "account_assignments" {
   source = "git::https://github.com/cloudposse/terraform-aws-sso.git//modules/account-assignments?ref=0.6.1"
@@ -113,34 +113,34 @@ module "account_assignments" {
 
 
 # Terraform backend
-module "tf_backend" {
-  for_each = var.accounts
-  source   = "git::https://github.com/padok-team/terraform-aws-terraformbackend?ref=v0.1.0"
+# module "tf_backend" {
+#   for_each = var.accounts
+#   source   = "git::https://github.com/padok-team/terraform-aws-terraformbackend?ref=v0.1.0"
 
-  bucket_name         = "${each.key}-backend-terraform-state"
-  dynamodb_table_name = "${each.key}-backend-terraform-lock"
-}
+#   bucket_name         = "${each.key}-backend-terraform-state"
+#   dynamodb_table_name = "${each.key}-backend-terraform-lock"
+# }
 
-data "aws_iam_policy_document" "tf_admin" {
-  for_each = var.accounts
+# data "aws_iam_policy_document" "tf_admin" {
+#   for_each = var.accounts
 
-  statement {
-    effect    = "Allow"
-    actions   = ["s3:ListBucket"]
-    resources = ["arn:aws:s3:::${each.key}-backend-terraform-state"]
-  }
-  statement {
-    effect    = "Allow"
-    actions   = ["s3:GetObject", "s3:PutObject"]
-    resources = ["arn:aws:s3:::${each.key}-backend-terraform-state/*"]
-  }
-  statement {
-    effect = "Allow"
-    actions = [
-      "dynamodb:GetItem",
-      "dynamodb:PutItem",
-      "dynamodb:DeleteItem"
-    ]
-    resources = ["arn:aws:dynamodb:*:*:table/${each.key}-backend-terraform-lock}"]
-  }
-}
+#   statement {
+#     effect    = "Allow"
+#     actions   = ["s3:ListBucket"]
+#     resources = ["arn:aws:s3:::${each.key}-backend-terraform-state"]
+#   }
+#   statement {
+#     effect    = "Allow"
+#     actions   = ["s3:GetObject", "s3:PutObject"]
+#     resources = ["arn:aws:s3:::${each.key}-backend-terraform-state/*"]
+#   }
+#   statement {
+#     effect = "Allow"
+#     actions = [
+#       "dynamodb:GetItem",
+#       "dynamodb:PutItem",
+#       "dynamodb:DeleteItem"
+#     ]
+#     resources = ["arn:aws:dynamodb:*:*:table/${each.key}-backend-terraform-lock}"]
+#   }
+# }
