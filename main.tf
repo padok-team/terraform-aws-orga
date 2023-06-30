@@ -100,13 +100,13 @@ resource "aws_organizations_account" "this" {
 }
 
 module "permission_sets" {
-  source = "git::https://github.com/cloudposse/terraform-aws-sso.git//modules/permission-sets?ref=0.6.1"
+  source = "git::https://github.com/cloudposse/terraform-aws-sso.git//modules/permission-sets?ref=1.1.1"
 
   permission_sets = concat(var.permission_sets, local.tf_admin_permission_sets)
 }
 
 module "account_assignments" {
-  source = "git::https://github.com/cloudposse/terraform-aws-sso.git//modules/account-assignments?ref=0.6.1"
+  source = "git::https://github.com/cloudposse/terraform-aws-sso.git//modules/account-assignments?ref=1.1.1"
 
   account_assignments = concat(local.account_assignements_flatten, local.tf_admin_account_assignements_flatten)
 }
